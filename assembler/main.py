@@ -6,8 +6,8 @@ import sys
 # Добавляем корень проекта в системный путь для корректного импорта модулей
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
 
-from assembler.readers.firstRead import first_read
-from assembler.readers.secondRead import second_read
+from assembler.readers.firstFileProcess import first_read
+from assembler.readers.secondFileProcess import second_read
 from typing import TextIO 
 
 # Настройка логирования

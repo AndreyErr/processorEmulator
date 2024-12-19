@@ -21,7 +21,7 @@ def init_processor():
     PC = 0
     CX = 0
     CARRYFLAG = False
-    SHIFT = 50
+    SHIFT = SHIFT
 
 
 def start_processor():

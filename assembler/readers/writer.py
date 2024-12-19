@@ -1,7 +1,6 @@
 import os
 import logging
 import sys
-from typing import TextIO
 
 # Добавляем корень проекта в системный путь для корректного импорта модулей
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
@@ -19,8 +18,8 @@ def clean_text(text: str) -> str:
     :param text: Исходная строка
     :return: Очищенная строка без комментариев
     """
-    parts = text.split('#')  # Разделяем строку по символу комментария
-    text = parts[0].strip()  # Убираем пробелы в начале и в конце
+    parts = text.split('#')
+    text = parts[0].strip()
     return text
 
 def write_bin(output_file, value: int):
