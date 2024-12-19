@@ -25,11 +25,10 @@ def open_bin_file(output_filename: str) -> TextIO:
     :return: Объект файла, открытого для записи
     """
     try:
-        output_file = open(output_filename, 'w')  # Открываем файл для записи
-        logger.debug(f"Файл создан: {output_filename}")  # Логируем успешное создание
+        output_file = open(output_filename, 'w')
+        logger.debug(f"Файл создан: {output_filename}")
         return output_file
     except OSError as e:
-        # Логируем ошибку и завершаем выполнение программы
         logger.error(f"Не удалось создать выходной файл: {e}")
         exit(1)
 
@@ -41,11 +40,10 @@ def open_asm_file(input_filename: str) -> TextIO:
     :return: Объект файла, открытого для чтения
     """
     try:
-        input_file = open(input_filename, 'r')  # Открываем файл для чтения
-        logger.debug(f"Файл открыт: {input_filename}")  # Логируем успешное открытие
+        input_file = open(input_filename, 'r')
+        logger.debug(f"Файл открыт: {input_filename}")
         return input_file
     except OSError as e:
-        # Логируем ошибку и завершаем выполнение программы
         logger.error(f"Не удалось открыть входной файл: {e}")
         exit(1)
 
@@ -59,7 +57,6 @@ def main():
     parser.add_argument("-o", "--output", default="arraysum.bin", help="Выходной бинарный файл")
     args = parser.parse_args()
 
-    # Открытие входного и выходного файлов
     try:
         input_file = open_asm_file(args.input)
         output_file = open_bin_file(args.output)
@@ -70,23 +67,18 @@ def main():
     # Инициализация словаря для jump-маркеров
     jmp_markers = {}
 
-    # Первый проход
-    logger.debug("Начало первого прохода")
     first_read(input_file, output_file, jmp_markers)
     logger.debug(f"Завершен первый проход. Jump-маркеры: {print_map(jmp_markers)}")
 
     input_file.close()
     input_file = open_asm_file(args.input)
 
-    # Второй проход
-    logger.debug("Начало второго прохода")
     second_read(input_file, output_file, jmp_markers)
     logger.debug("Завершен второй проход")
 
-    # Закрытие файлов
     output_file.close()
     input_file.close()
-    logger.info(f"Конвертация завершена. Выходной файл: {args.output}")
+    logger.info(f"Конвертация завершена")
 
 if __name__ == "__main__":
     main()

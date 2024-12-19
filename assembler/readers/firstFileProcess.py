@@ -14,33 +14,24 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger()
 
 def first_read(input_file, output_file, jmp_markers: Dict[str, int]):
-    """
-    Выполняет первый проход по входному файлу, обрабатывая секции и команды.
-    
-    :param input_file: Открытый файл для чтения
-    :param output_file: Открытый файл для записи
-    :param jmp_markers: Словарь меток переходов и их позиций
-    """
     logger.debug("Начало первого прохода")
     instruction_num = 0
     data_num = 0
 
     # Чтение данных из input_file
     for line in input_file:
-        text = clean_text(line)  # Очищаем текст строки от пробелов
-        if not text:  # Пропускаем пустые строки
+        text = clean_text(line) 
+        if not text:
             logger.debug("Пропущена пустая строка")
             continue
-        elif text.startswith('.'):  # Если строка начинается с точки, это секция
-            logger.debug(f"Найдена секция: {text}")
-            if text == ".DATA":  # Если секция .DATA, обрабатываем данные
-                logger.debug("Обработка секции .DATA")
+        elif text.startswith('.'):
+            logger.debug(f"Секция: {text}")
+            if text == ".DATA": 
                 data_num = data_parser(input_file, output_file, data_num)
                 continue
-            logger.debug(f"Чтение секции: {text}")  # Обрабатываем команды
             instruction_num = instruct_reader(input_file, instruction_num, jmp_markers, text)
             continue
-        else:  # Если секция неизвестна, выводим ошибку и завершаем работу
+        else:
             logger.error(f"Неверная секция: {text}")
             exit(1)
     
@@ -50,27 +41,19 @@ def first_read(input_file, output_file, jmp_markers: Dict[str, int]):
 
 
 def instruct_reader(file, instruction_num: int, jmp_markers: Dict[str, int], currentLine) -> bool:
-    """
-    Обрабатывает секцию инструкций, обновляя словарь меток и подсчитывая количество инструкций.
-    
-    :param file: Открытый файл для чтения инструкций
-    :param instruction_num: Текущий номер инструкции
-    :param jmp_markers: Словарь меток переходов
-    :return: True, если секция успешно обработана
-    """
-    section_name = clean_text(currentLine)[1:]  # Читаем имя секции и удаляем точку
-    jmp_markers[section_name] = instruction_num  # Сохраняем метку перехода
-    logger.debug(f"Сохранена секция: {section_name}, инструкция: {instruction_num}")
+    section_name = clean_text(currentLine)[1:]
+    jmp_markers[section_name] = instruction_num
+    logger.debug(f"Секция: {section_name}, инструкция: {instruction_num}")
     
     for line in file:
         text = clean_text(line)
-        if not text or text.startswith('.'):  # Если пустая строка или новая секция
+        if not text or text.startswith('.'):
             break
         
-        parts = text.split(" ")  # Разделяем строку на части
+        parts = text.split(" ")
         instruction = parts[0]
         
-        if instruction not in INSTRUCTION_SET:  # Проверяем, является ли инструкция допустимой
+        if instruction not in INSTRUCTION_SET:
             logger.error(f"Неверная инструкция: {instruction}")
             exit(1)
         
@@ -95,27 +78,19 @@ def instruct_reader(file, instruction_num: int, jmp_markers: Dict[str, int], cur
     return instruction_num
 
 def data_parser(file, output_file, data_num: int) -> bool:
-    """
-    Обрабатывает секцию .DATA, записывая данные в выходной файл.
-    
-    :param file: Открытый файл для чтения данных
-    :param output_file: Открытый файл для записи данных
-    :param data_num: Текущий номер данных
-    :return: True, если секция успешно обработана
-    """
     for line in file:
         text = clean_text(line)
-        if not text or text.startswith('.'):  # Прерываем обработку, если началась новая секция
+        if not text or text.startswith('.'):
             break
         
-        nums = text.split(" ")  # Разделяем строку на числа
+        nums = text.split(" ")
         for num_str in nums:
             try:
-                num = int(num_str)  # Конвертируем строку в число
+                num = int(num_str)
             except ValueError:
                 logger.error(f"Не удалось разобрать число: {num_str}")
                 exit(1)
-            write_bin(output_file, num)  # Записываем число в выходной файл
+            write_bin(output_file, num)
             data_num += 1
 
     logger.debug("Завершена обработка секции .DATA")

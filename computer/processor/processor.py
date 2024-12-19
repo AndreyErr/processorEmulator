@@ -10,13 +10,10 @@ CX = 0  # Регистр CX
 CARRYFLAG = False  # Флаги
 MEMORY = [0] * 100  # Память
 SHIFT = 50  # Шифт, если потребуется
-
-# Константы
 MAX_DATA_VAL = (1 << DATA_SIZE) - 1  # Максимальное значение данных
 
 
 def init_processor():
-    """Инициализация процессора"""
     global PC, CX, CARRYFLAG, MEMORY, SHIFT
     PC = 0
     CX = 0
@@ -25,8 +22,7 @@ def init_processor():
 
 
 def start_processor():
-    """Основной цикл выполнения процессора"""
-    global PC, CX, CARRYFLAG, MEMORY  # Обеспечим, чтобы память не перезаписывалась
+    global PC, CX, CARRYFLAG, MEMORY
     stack = []
     while True:
         logging.info(repr_processor(stack, True))
@@ -92,14 +88,9 @@ def bool2int(b):
 
 
 def repr_processor(stack, is_inst=False):
-    """Возвращает строковое представление состояния процессора"""
     global PC, CX, CARRYFLAG
-
-    # Декодируем память в PC
     decoded_pc_mem = str(MEMORY[PC])
     if is_inst:
         inst = INSTRUCTION_SET_REV.get(MEMORY[PC], "???")
         decoded_pc_mem = inst
-
-    # Итоговая строка
     return f"{decoded_pc_mem} Стек: [{', '.join(f'0x{item:x}({item})' for item in stack)}] CARRYFLAG: {bool2int(CARRYFLAG)} / Исполняемая команда: {PC} / Счётчик обратного отсчёта: {CX}"

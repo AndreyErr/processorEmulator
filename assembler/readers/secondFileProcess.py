@@ -14,17 +14,9 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger()
 
 def second_read(input_file, output_file, jmp_markers: Dict[str, int]):
-    """
-    Выполняет второй проход по входному файлу, обрабатывая инструкции и записи переходов.
-
-    :param input_file: Путь к входному файлу
-    :param output_file: Путь к выходному файлу
-    :param jmp_markers: Словарь с метками переходов и их адресами
-    """
     logger.debug("Начало второго прохода")
     instruction_num = 0  # Начальный счетчик инструкций
     
-    # Чтение каждой строки файла
     for line in input_file:
         text = clean_text(line)
         
@@ -52,21 +44,11 @@ def second_read(input_file, output_file, jmp_markers: Dict[str, int]):
     # Если не было записано ни одной инструкции, записываем пустую секцию
     if instruction_num == 0:
         write_bin(output_file, 0)
-    # output_file.write("\n")
 
 
 def instruct_parser(file: TextIO, output_file: TextIO, instruction_num: int, jmp_markers: Dict[str, int], text) -> int:
-    """
-    Обрабатывает секцию инструкций, записывая их в выходной файл.
-
-    :param file: Открытый файл для чтения
-    :param output_file: Открытый файл для записи
-    :param instruction_num: Текущий номер инструкции
-    :param jmp_markers: Словарь с метками переходов
-    :return: Обновленный счетчик инструкций
-    """
-    section_name = clean_text(text).strip()[1:]  # Удаляем точку из имени секции
-    logger.debug(f"Начало обработки секции: {section_name}, инструкция: {instruction_num}")
+    section_name = clean_text(text).strip()[1:]
+    logger.debug(f"Начало обработки секции: {section_name}")
     
     for line in file:
         text = clean_text(line)
@@ -96,5 +78,5 @@ def instruct_parser(file: TextIO, output_file: TextIO, instruction_num: int, jmp
         else:
             instruction_num = write_bin(output_file, INSTRUCTION_SET[instruction])
     
-    logger.debug(f"Завершена обработка секции: {section_name}, инструкция: {instruction_num}")
+    logger.debug(f"Завершена обработка секции: {section_name}")
     return instruction_num
