@@ -78,6 +78,7 @@ def instruct_reader(file, instruction_num: int, jmp_markers: Dict[str, int], cur
     return instruction_num
 
 def data_parser(file, output_file, data_num: int) -> bool:
+    numbers = []
     for line in file:
         text = clean_text(line)
         if not text or text.startswith('.'):
@@ -90,8 +91,11 @@ def data_parser(file, output_file, data_num: int) -> bool:
             except ValueError:
                 logger.error(f"Не удалось разобрать число: {num_str}")
                 exit(1)
-            write_bin(output_file, num)
+            numbers.append(num)
             data_num += 1
-
+        data_num += 1
+        write_bin(output_file, len(numbers))
+        for num in numbers:
+            write_bin(output_file, num)
     logger.debug("Завершена обработка секции .DATA")
     return data_num
